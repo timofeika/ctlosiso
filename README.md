@@ -14,9 +14,13 @@ Home: https://ctlos.github.io
 yay -S git arch-install-scripts archiso --noconfirm
 ```
 
-Первым параметром указываем de/wm, ориентир файл packages.openbox(de/wm). Вторым версию(любую), иначе не отработает.
+Первым параметром указываем de/wm, ориентир файл packages.openbox(de/wm), **данная ветка: net(требуется интернет)**. Вторым версию(любую), иначе не отработает.
 
-В скрипте `autobuild.sh` измените переменную `USER`, на ваше имя пользователя `st`.
+```sh
+sudo ./autobuild.sh net 1.0.0
+```
+
+В скрипте `autobuild.sh` измените переменную `USER`, на ваше имя пользователя `st`, или оставьте `$(whoami)`.
 
 Измените список пакетов.
 
@@ -41,7 +45,7 @@ sudo ./autobuild.sh openbox 1.7.0
 Можно клонировать определенную ветку, с нужным de/wm (xfce/bspwm).
 
 ```sh
-git clone -b xfce git@github.com:ctlos/ctlosiso.git
+git clone -b i3 git@github.com:ctlos/ctlosiso.git
 ```
 
 Получить удаленную ветку и переключиться на неё.
