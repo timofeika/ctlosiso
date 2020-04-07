@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# Ctlos Linux https://ctlos.github.io
+
+gnome-multi-writer
+smplayer
+smplayer-skins
+smplayer-themes
+
+### ctlos repo
+## Aur
+calamares
+ckbcomp
+mkinitcpio-openswap
+
+## Ctlos pkg
+ctlos-i3-skel
