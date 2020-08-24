@@ -43,13 +43,13 @@ fixPermissions() {
     chown root:root /etc
     chown root:root /etc/default
     chown root:root /usr
-    chmod 755 /etc
-
-    #enable sudo
-    chmod 750 /etc/sudoers.d
+    chmod 755 /etc/sudoers.d
     chmod 440 /etc/sudoers.d/g_wheel
-    chown -R root /etc/sudoers.d
-    chmod -R 755 /etc/sudoers.d
+    chown 0 /etc/sudoers.d
+    chown 0 /etc/sudoers.d/g_wheel
+    chown root:root /etc/sudoers.d
+    chown root:root /etc/sudoers.d/g_wheel
+    chmod 755 /etc
 }
 
 configRootUser() {
@@ -65,8 +65,7 @@ createLiveUser() {
     ## add liveuser
     glist="audio,floppy,log,network,rfkill,scanner,storage,optical,power,wheel"
     if ! id $isouser 2>/dev/null; then
-        useradd -m -g users -G $glist -s /bin/zsh $isouser
-        passwd -d $isouser
+        useradd -m -p "" -g users -G $glist -s /usr/bin/zsh $isouser
         echo "$isouser ALL=(ALL) ALL" >> /etc/sudoers
     fi
 }
@@ -88,22 +87,9 @@ fontFix() {
 }
 
 fixWifi() {
-    su -c 'echo "" >> /etc/NetworkManager/NetworkManager.conf'
+    su -c 'echo "" > /etc/NetworkManager/NetworkManager.conf'
     su -c 'echo "[device]" >> /etc/NetworkManager/NetworkManager.conf'
     su -c 'echo "wifi.scan-rand-mac-address=no" >> /etc/NetworkManager/NetworkManager.conf'
-}
-
-fixHibernate() {
-    sed -i 's/#\(HandleSuspendKey=\)suspend/\1ignore/' /etc/systemd/logind.conf
-    sed -i 's/#\(HandleHibernateKey=\)hibernate/\1ignore/' /etc/systemd/logind.conf
-    sed -i 's/#\(HandleLidSwitch=\)suspend/\1ignore/' /etc/systemd/logind.conf
-}
-
-fixHaveged(){
-    systemctl start haveged
-    systemctl enable haveged
-
-    rm -fr /etc/pacman.d/gnupg
 }
 
 # initkeys() {
@@ -118,20 +104,20 @@ fixHaveged(){
 # }
 
 enableServices() {
-    # systemctl enable pacman-init.service
+    systemctl enable pacman-init.service
     systemctl enable choose-mirror.service
-    systemctl enable avahi-daemon.service
+    systemctl enable haveged.service
     systemctl enable vboxservice.service
-    systemctl enable systemd-networkd.service
-    systemctl enable systemd-resolved.service
-    systemctl enable systemd-timesyncd
-    systemctl enable sddm.service
     systemctl enable vbox-check.service
-    systemctl enable xdg-user-dirs-update.service
+    systemctl enable sddm.service
     systemctl enable reflector.service
-    # systemctl enable reflector.timer
-    systemctl -fq enable NetworkManager.service
-    systemctl mask systemd-rfkill@.service
+    systemctl enable systemd-timesyncd.service
+    systemctl enable avahi-daemon.service
+    # systemctl enable systemd-networkd.service
+    # systemctl enable systemd-resolved.service
+    systemctl enable NetworkManager.service
+    systemctl enable systemd-networkd-wait-online.service
+    systemctl enable xdg-user-dirs-update.service
     systemctl set-default graphical.target
 }
 
@@ -145,7 +131,7 @@ createLiveUser
 setDefaults
 fontFix
 fixWifi
-fixHibernate
-fixHaveged
 # initkeys
 enableServices
+
+echo "DONE!!! customize_airootfs.sh"

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # gpg --detach-sign Ctlos.iso
+# gpg --verify ctlos.iso.sig ctlos.iso_name
 
-# $whoami && $LOGNAME
-USER=$(whoami)
+user_name=st
 iso_name=ctlos
 iso_de=$1
 iso_version=$2_$(date +%Y%m%d)
@@ -25,17 +25,21 @@ build_iso(){
     pacman -S $package --noconfirm
   fi
 
+  rm -rf /var/cache/pacman/pkg/*
+  pacman-key --init
+  pacman-key --populate
+
   source build.sh -v
 }
 
 #create md5sum, sha256, sig
 check_sums() {
-  chown $USER out/
+  chown -R $user_name out/
   cd out/
   echo "create MD5, SHA-256 Checksum, sig"
-  sudo -u $USER md5sum $ISO >> $ISO.md5sum.txt
-  sudo -u $USER shasum -a 256 $ISO >> $ISO.sha256.txt
-  # sudo -u $USER gpg --detach-sign --no-armor $ISO
+  sudo -u $user_name md5sum $ISO >> $ISO.md5.txt
+  sudo -u $user_name shasum -a 256 $ISO >> $ISO.sha256.txt
+  # sudo -u $user_name gpg --detach-sign --no-armor $ISO
 }
 
 run_qemu()

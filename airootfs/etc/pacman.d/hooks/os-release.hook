@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = filesystem
+
+[Action]
+Description = Add Ctlos os-release
+When = PostTransaction
+Exec = /bin/sh -c "cp -r /usr/lib/os-release-ctlos /usr/lib/os-release"
